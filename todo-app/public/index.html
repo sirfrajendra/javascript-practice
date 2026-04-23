@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Todo App</h2>
+
+<input id="task" placeholder="Enter task">
+<button onclick="addTodo()">Add</button>
+
+<ul id="list"></ul>
+
+<script>
+
+// Load all todos
+async function loadTodos() {
+  const res = await fetch('/todos'); 
+  // GET request to server
+
+  const todos = await res.json(); 
+  // parse JSON response
+
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+
+  todos.forEach(t => {
+    const li = document.createElement('li');
+
+    li.innerText = t.task + (t.done ? " ✅" : " ❌");
+    // show status
+
+    // toggle on click
+    li.onclick = () => toggleTodo(t.id);
+
+    // delete button
+    const delBtn = document.createElement('button');
+    delBtn.innerText = "Delete";
+    delBtn.onclick = (e) => {
+      e.stopPropagation(); 
+      // prevent toggle when clicking delete
+      deleteTodo(t.id);
+    };
+
+    li.appendChild(delBtn);
+    list.appendChild(li);
+  });
+}
+
+// Add new todo
+async function addTodo() {
+  const task = document.getElementById('task').value;
+
+  await fetch('/add', {
+    method: 'POST',
+    body: JSON.stringify({ task }), 
+    // JS → JSON
+    headers: { 'Content-Type': 'application/json' }
+  });
+
+  loadTodos(); 
+}
+
+// Toggle status
+async function toggleTodo(id) {
+  await fetch('/toggle', {
+    method: 'POST',
+    body: JSON.stringify({ id }),
+    headers: { 'Content-Type': 'application/json' }
+  });
+
+  loadTodos();
+}
+
+// Delete todo
+async function deleteTodo(id) {
+  await fetch('/delete', {
+    method: 'POST',
+    body: JSON.stringify({ id }),
+    headers: { 'Content-Type': 'application/json' }
+  });
+
+  loadTodos();
+}
+
+// initial load
+loadTodos();
+
+</script>
+
+</body>
+</html>

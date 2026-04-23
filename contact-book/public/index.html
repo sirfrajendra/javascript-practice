@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Contact Book</h2>
+
+<h3>Add Contact</h3>
+<input id="name" placeholder="Name">
+<input id="phone" placeholder="Phone">
+<button onclick="addContact()">Add</button>
+
+<h3>Search Contact</h3>
+<input id="search" placeholder="Search by name">
+<button onclick="searchContact()">Search</button>
+<button onclick="loadContacts()">Reset</button>
+
+<h3>Contact List</h3>
+<ul id="list"></ul>
+
+<script>
+
+// Load all contacts
+async function loadContacts() {
+  const res = await fetch('/contacts');
+  const contacts = await res.json();
+
+  render(contacts);
+}
+
+// Render list
+function render(data) {
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+
+  data.forEach(c => {
+    const li = document.createElement('li');
+    li.innerText = c.name + " - " + c.phone;
+    list.appendChild(li);
+  });
+}
+
+// Add contact
+async function addContact() {
+  const name = document.getElementById('name').value;
+  const phone = document.getElementById('phone').value;
+
+  await fetch('/add-contact', {
+    method: 'POST',
+    body: JSON.stringify({ name, phone }),
+    headers: { 'Content-Type': 'application/json' }
+  });
+
+  loadContacts();
+}
+
+// Search contact
+async function searchContact() {
+  const name = document.getElementById('search').value;
+
+  const res = await fetch('/search', {
+    method: 'POST',
+    body: JSON.stringify({ name }),
+    headers: { 'Content-Type': 'application/json' }
+  });
+
+  const result = await res.json();
+
+  render(result);
+}
+
+// initial load
+loadContacts();
+
+</script>
+
+</body>
+</html>
