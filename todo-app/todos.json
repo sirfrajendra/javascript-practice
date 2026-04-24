@@ -1,12 +1,14 @@
 [
   {
-    "task": "RemitOS UI to host in amplify",
-    "id": 1776936650765,
-    "done": false
+    "text": "Iterating JSON concepts",
+    "id": 1776999085010
   },
   {
-    "task": "JSON to be implemented, to understand all its core components",
-    "id": 1776936708514,
-    "done": false
+    "text": "File based fullstack",
+    "id": 1776999121210
+  },
+  {
+    "text": "basic crud file based",
+    "id": 1776999136684
   }
 ]
